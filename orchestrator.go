@@ -15,11 +15,11 @@ type Orchestrator[T any] interface {
 	// Returns self to enable fluent chaining. Idiomatic Go for builders.
 	Then(step *StepDefinition[T]) Orchestrator[T]
 
-	// Run executes the saga end-to-end: forward steps, failure handling, compensation, and persistence.
+	// Execute executes the saga end-to-end: forward steps, failure handling, compensation, and persistence.
 	// It's idempotent—if a store is configured and the same idempotency key is used,
 	// it will resume from the last known state instead of restarting.
 	// Returns the first non-ContinueOnErr error encountered, or nil on full success.
-	Run(ctx context.Context, data *T) error
+	Execute(ctx context.Context, data *T) error
 }
 
 // ctx holds the internal state of the orchestrator.
@@ -86,9 +86,9 @@ func (o *ctx[T]) Then(step *StepDefinition[T]) Orchestrator[T] {
 	return o
 }
 
-// Run executes the saga from start to finish, with full support for resumption, retries, and compensation.
+// Execute executes the saga from start to finish, with full support for resumption, retries, and compensation.
 // This is the only entry point for execution—everything else is set up.
-func (o *ctx[T]) Run(ctx context.Context, data *T) error {
+func (o *ctx[T]) Execute(ctx context.Context, data *T) error {
 	if len(o.flowSteps) == 0 {
 		o.logger.Warnf("orchestrator '%s' has no steps defined", o.name)
 		return ErrNoSteps

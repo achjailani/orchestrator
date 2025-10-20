@@ -25,11 +25,11 @@ func TestOrchestrator(t *testing.T) {
 	}
 
 	store := orchestrator.NewInMemoryStore()
-	executor := orchestrator.NewOrchestrator[SignWorkflow]("sign-document",
+	och := orchestrator.NewOrchestrator[SignWorkflow]("sign-document",
 		orchestrator.WithStore[SignWorkflow](store),
 	)
 
-	executor.
+	och.
 		Then(&orchestrator.StepDefinition[SignWorkflow]{
 			Name: "ValidateRequest",
 			Perform: func(ctx context.Context, data *SignWorkflow) error {
@@ -41,7 +41,7 @@ func TestOrchestrator(t *testing.T) {
 			},
 		})
 
-	executor.Then(&orchestrator.StepDefinition[SignWorkflow]{
+	och.Then(&orchestrator.StepDefinition[SignWorkflow]{
 		Name: "ValidateAccess",
 		Perform: func(ctx context.Context, data *SignWorkflow) error {
 			if !data.AccessOK {
@@ -53,7 +53,7 @@ func TestOrchestrator(t *testing.T) {
 	})
 
 	// append
-	executor.Then(&orchestrator.StepDefinition[SignWorkflow]{
+	och.Then(&orchestrator.StepDefinition[SignWorkflow]{
 		Name: "CheckBalance",
 		Perform: func(ctx context.Context, data *SignWorkflow) error {
 			if !data.BalanceOK {
@@ -64,7 +64,7 @@ func TestOrchestrator(t *testing.T) {
 		},
 	})
 
-	executor.
+	och.
 		Then(&orchestrator.StepDefinition[SignWorkflow]{
 			Name: "SignDocument",
 			Perform: func(ctx context.Context, data *SignWorkflow) error {
@@ -81,7 +81,7 @@ func TestOrchestrator(t *testing.T) {
 			},
 		})
 
-	executor.Then(&orchestrator.StepDefinition[SignWorkflow]{
+	och.Then(&orchestrator.StepDefinition[SignWorkflow]{
 		Name: "DeductBalance",
 		Perform: func(ctx context.Context, data *SignWorkflow) error {
 			data.BalanceDeducted = true
@@ -101,7 +101,7 @@ func TestOrchestrator(t *testing.T) {
 		ContinueOnErr: true,
 	})
 
-	if err := executor.Run(ctx, data); err != nil {
+	if err := och.Execute(ctx, data); err != nil {
 		fmt.Println("Saga failed:", err)
 	}
 }
