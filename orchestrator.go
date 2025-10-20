@@ -140,7 +140,7 @@ func (o *ctx[T]) Run(ctx context.Context, data *T) error {
 func (o *ctx[T]) runOnIndex(ctx context.Context, startIdx int, data *T) error {
 	o.logger.Infof("Starting flow: %q (from step index %d)", o.name, startIdx)
 	defer func() {
-		o.Persist(ctx)
+		o.persist(ctx)
 	}()
 
 	for index := startIdx; index < len(o.flowSteps); index++ {
@@ -279,10 +279,10 @@ func (o *ctx[T]) validateStep(step *StepDefinition[T]) error {
 	return nil
 }
 
-// Persist saves the current flow state to the configured Store, if available.
+// persist saves the current flow state to the configured Store, if available.
 // It ensures progress and recovery data are recorded between steps.
 // If no Store is configured, this method performs no operation.
-func (o *ctx[T]) Persist(ctx context.Context) {
+func (o *ctx[T]) persist(ctx context.Context) {
 	if o.store != nil {
 		err := o.store.Save(ctx, o.flow)
 		if err != nil {
