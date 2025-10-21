@@ -65,6 +65,7 @@ type StepFunc[T any] func(ctx context.Context, data *T) error
 // will be executed by the transaction based on the step compensation
 type StepCompensatorFunc[T any] func(ctx context.Context, data *T) error
 
+// SkipFunc defines a type of skipping process based on specified condition
 type SkipFunc[T any] func(ctx context.Context) bool
 
 // StepDefinition defines one saga step, using generics for type safety.

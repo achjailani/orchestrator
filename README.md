@@ -1,6 +1,8 @@
 # A Tiny Orchestrator for Go
-A tiny and type-safe Saga Pattern orchestrator for managing distributed transactions in Go. Built with generics, resumable execution, and optional persistence—perfect for microservices, event-driven workflows, and reliable business processes.
+A tiny and type-safe Saga Pattern orchestrator for managing distributed transactions in Go. Built with generics, resumable execution, and optional persistence—suit for microservices, event-driven workflows, and reliable business processes.
 > “Failures are inevitable. Data inconsistency shouldn’t be.”
+
+**NOTE**: Not ready to use, still on development
 
 ### Features
 * Resumable sagas: Automatically resume from the last failed step after crashes or restarts.
